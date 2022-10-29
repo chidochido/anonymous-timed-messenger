@@ -1,0 +1,21 @@
+const express = require('express')
+const router = express.Router()
+const {
+	getMessages,
+	setMessage,
+	updateMessage,
+	deleteMessage,
+} = require('../controllers/messageController')
+
+router.route('/').get(getMessages).post(setMessage)
+router.route('/:id').put(updateMessage).delete(deleteMessage)
+
+// router.get('/', getMessages)
+
+// router.post('/', setMessage)
+
+// router.put('/:id', updateMessage)
+
+// router.delete('/:id', deleteMessage)
+
+module.exports = router
