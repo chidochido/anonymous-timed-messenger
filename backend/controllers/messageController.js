@@ -1,10 +1,11 @@
 const asyncHandler = require('express-async-handler')
 const Message = require('../models/messageModel')
+const User = require('../models/userModel')
 
 // @desc  get messages
 // @route GET /api/messages
 const getMessages = asyncHandler(async (req, res) => {
-	const messages = await Message.find()
+	const messages = await Message.find({ user: req.user.id })
 	res.status(200).json(messages)
 })
 
@@ -17,6 +18,7 @@ const setMessage = asyncHandler(async (req, res) => {
 	}
 	const message = await Message.create({
 		text: req.body.text,
+		user: req.user.id,
 	})
 
 	res.status(200).json(message)
@@ -32,6 +34,20 @@ const updateMessage = asyncHandler(async (req, res) => {
 		throw new Error('message not found')
 	}
 
+	const user = await User.findById(req.user.id)
+
+	// check for logged in user
+	if (!user) {
+		res.status(401)
+		throw new Error('user not found')
+	}
+
+	// make sure logged in user matches user corresp. to message
+	if (message.user.toString() !== user.id) {
+		res.status(401)
+		throw new Error('user not authorized')
+	}
+
 	const updatedMessage = await Message.findByIdAndUpdate(req.params.id, req.body, { new: true })
 	res.status(200).json(updatedMessage)
 })
@@ -44,6 +60,20 @@ const deleteMessage = asyncHandler(async (req, res) => {
 	if (!message) {
 		res.status(400)
 		throw new Error('message not found')
+	}
+
+	const user = await User.findById(req.user.id)
+
+	// check for logged in user
+	if (!user) {
+		res.status(401)
+		throw new Error('user not found')
+	}
+
+	// make sure logged in user matches user corresp. to message
+	if (message.user.toString() !== user.id) {
+		res.status(401)
+		throw new Error('user not authorized')
 	}
 
 	await message.delete()

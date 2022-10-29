@@ -4,16 +4,16 @@ const { stringify } = require('querystring')
 const userSchema = mongoose.Schema(
 	{
 		name: {
-			type: string,
+			type: String,
 			required: [true, 'Please add a name'],
 		},
 		email: {
-			type: string,
+			type: String,
 			required: [true, 'Please add an email'],
 			unique: true,
 		},
 		password: {
-			type: string,
+			type: String,
 			required: [true, 'Please add a password'],
 			unique: true,
 		},
@@ -21,4 +21,4 @@ const userSchema = mongoose.Schema(
 	{ timestamps: true }
 )
 
-module.exports = mongoose.Model('User', userSchema)
+module.exports = mongoose.model('User', userSchema)
