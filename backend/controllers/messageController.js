@@ -34,16 +34,14 @@ const updateMessage = asyncHandler(async (req, res) => {
 		throw new Error('message not found')
 	}
 
-	const user = await User.findById(req.user.id)
-
 	// check for logged in user
-	if (!user) {
+	if (!req.user) {
 		res.status(401)
 		throw new Error('user not found')
 	}
 
 	// make sure logged in user matches user corresp. to message
-	if (message.user.toString() !== user.id) {
+	if (message.user.toString() !== req.user.id) {
 		res.status(401)
 		throw new Error('user not authorized')
 	}
@@ -62,16 +60,14 @@ const deleteMessage = asyncHandler(async (req, res) => {
 		throw new Error('message not found')
 	}
 
-	const user = await User.findById(req.user.id)
-
 	// check for logged in user
-	if (!user) {
+	if (!req.user) {
 		res.status(401)
 		throw new Error('user not found')
 	}
 
 	// make sure logged in user matches user corresp. to message
-	if (message.user.toString() !== user.id) {
+	if (message.user.toString() !== req.user.id) {
 		res.status(401)
 		throw new Error('user not authorized')
 	}
